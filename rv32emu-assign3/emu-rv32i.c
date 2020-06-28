@@ -854,12 +854,10 @@ int target_write_u8(uint32_t addr, uint8_t val)
 #ifdef USE_CACHE
             // TODO: Assignment #3
 			uint32_t offset = addr & 3;
-			uint8_t *p = ram + (addr - offset);
-			uint32_t val32 = ((uint32_t)val) << (8*offset);
-			for(int i = 0; i < 4; i++)
-				if(i != offset)
-					val32 |= ((uint32_t)p[i] << (8*i));
-			cache_write(addr, val32);
+			uint32_t cval = cache_read(addr - offset);
+			uint32_t mask = ~(0xff << (8*offset));
+			uint32_t val32 = (cval & mask) | ((uint32_t)val << (8*offset));
+			cache_write(addr - offset, val32);
 #else
             uint8_t *p = ram + addr;
             p[0] = val & 0xff;
@@ -895,12 +893,10 @@ int target_write_u16(uint32_t addr, uint16_t val)
 #ifdef USE_CACHE
         // TODO: Assignment #3
 		uint32_t offset = addr & 3;
-		uint8_t *p = ram + (addr - offset);
-		uint32_t val32 = ((uint32_t)val) << (8*offset);
-		for(int i = 0; i < 4; i++)
-			if((offset ^ i) & 2)
-				val32 |= ((uint32_t)p[i] << (8*i));
-		cache_write(addr, val32);
+		uint32_t cval = cache_read(addr - offset);
+		uint32_t mask = ~(0xff << (8*offset));
+		uint32_t val32 = (cval & mask) | ((uint32_t)val << (8*offset));
+		cache_write(addr - offset, val32);
 #else
         uint8_t *p = ram + addr;
         p[0] = val & 0xff;

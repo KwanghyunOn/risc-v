@@ -58,7 +58,7 @@ uint32_t cache_read(uint32_t addr)
 		if(!cache[cid].valid || (cache[lru_cid].valid && cache[lru_cid].counter < cache[cid].counter))
 			lru_cid = cid;
 	}
-	lru_cid = idx << 2;
+	// lru_cid = idx << 2;
 	if(!hit) {
 		num_cache_miss++;
 		uint8_t *p = ram + addr;
@@ -88,7 +88,7 @@ void cache_write(uint32_t addr, uint32_t value)
 		if(!cache[cid].valid || (cache[lru_cid].valid && cache[lru_cid].counter < cache[cid].counter))
 			lru_cid = cid;
 	}
-	lru_cid = idx << 2;
+	// lru_cid = idx << 2;
 	cache[lru_cid].tag = tag;
 	cache[lru_cid].valid = 1;
 	cache[lru_cid].data = value;
